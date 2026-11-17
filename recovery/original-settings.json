@@ -1,0 +1,46 @@
+{
+  "sensor_mounting": {
+    "orientation_tx": 0,
+    "tilt_angle_deg": 0.0,
+    "mounting_height_m": 1.5
+  },
+  "fov": {
+    "range_m": {
+      "min": 0.0,
+      "max": 10.0
+    },
+    "angle_deg": {
+      "min": -90.0,
+      "max": 90.0
+    }
+  },
+  "angle_correction": {
+    "enable": 0,
+    "outside_policy": 0,
+    "edge_handling": 2,
+    "edge_clip_deg": 75.0,
+    "measured_deg": {
+      "measured_at_m70": -70.0,
+      "measured_at_m60": -60.0,
+      "measured_at_m50": -50.0,
+      "measured_at_m40": -40.0,
+      "measured_at_m30": -30.0,
+      "measured_at_m20": -20.0,
+      "measured_at_m10": -10.0,
+      "measured_at_0": 0.0,
+      "measured_at_p10": 10.0,
+      "measured_at_p20": 20.0,
+      "measured_at_p30": 30.0,
+      "measured_at_p40": 40.0,
+      "measured_at_p50": 50.0,
+      "measured_at_p60": 60.0,
+      "measured_at_p70": 70.0
+    }
+  },
+  "tracker": {
+    "macro_sensitivity": 1.0,
+    "micro_sensitivity": 1.0,
+    "safe_mode_as_default": 1,
+    "room_size_detection": 1
+  }
+}

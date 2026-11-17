@@ -1,0 +1,61 @@
+# Downloaded SDKs, reference checkouts and unused import template
+/vendor/
+/firmware/mtb_shared/
+/firmware/radar-ble/
+/firmware/radar-app/libs/
+
+# Build output and machine-specific ModusToolbox/IDE state
+**/build/
+.mtbqueryapi
+.ninja_log
+.ninja_deps
+*.timestamp
+.hardware-config-server.generated-files
+.mtbLaunchConfigs/
+.settings/
+.vscode/
+.idea/
+.metadata/
+*.code-workspace
+compile_commands.json
+/firmware/radar-app/project_info.json
+/firmware/radar-app/bsps/*/docs/
+
+# Local logs, captures, debug history and old candidate artifacts
+/logs/
+/tmp/
+/PAUSED.txt
+/project-state.json
+/release/radar-ble-v0.2.0-candidate.hex
+/release/research-manifest.json
+/recovery/*
+!/recovery/README.txt
+!/recovery/presence_detection_and_tracking_csk_v1_4_1.hex
+!/recovery/original-settings.json
+
+# Installers and caches (required firmware HEX files remain tracked)
+/*.exe
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+node_modules/
+.pytest_cache/
+*.log
+*.tmp
+*.bak
+*.swp
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Credentials and local overrides
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json

@@ -1,0 +1,20 @@
+* text=auto eol=lf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.py text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.mtb text eol=lf
+*.mtbx text eol=lf
+Makefile text eol=lf
+# Preserve firmware bytes exactly: the installers verify SHA-256.
+*.hex -text -diff
+*.bin binary
+*.a binary
+*.pdf binary
+*.png binary
+*.zip binary

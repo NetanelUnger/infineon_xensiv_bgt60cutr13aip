@@ -1,0 +1,15 @@
+{
+  "name": "presence_detection_and_tracking_ble",
+  "version": "0.2.0",
+  "build": "ble-research-v1",
+  "status": "Development snapshot; previously programmed and flash verified; 10-second BLE download stall unresolved",
+  "hex": "radar-ble-v0.2.0-development.hex",
+  "sha256": "44e5d328b9091602c6c429158c09525e8b423c577394be2b0de82ddf76c34610",
+  "flash_utilized_bytes": 428668,
+  "snapshot_date": "2026-11-17",
+  "launcher": "../Install-Radar-BLE.cmd",
+  "known_issues": "../KNOWN_ISSUES.md",
+  "note": "Includes unlimited advertising. Different from the earlier candidate image. No firmware change or new hardware programming performed while adding launchers.",
+  "toolchain": "Arm GNU 14.2.1 / ModusToolbox 3.9.0",
+  "source": "../firmware/radar-app"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "presence_detection_and_tracking_ble",
+  "version": "0.1.0",
+  "build": "ble-v1",
+  "date": "2026-11-17",
+  "board": "KIT_CSK_BGT60CUTR13 / CYSBSYSKIT-DEV-01",
+  "hex": "radar-ble-v0.1.0.hex",
+  "sha256": "a8ea8b95aecaeccf72ec974ef6e5681786d4e5626f66027bf4a50ba14d7eb365",
+  "flash_utilized_bytes": 426924,
+  "algorithm": "1.2.1-6253c6e+common.indoorSmartar17",
+  "toolchain": "Arm GNU 14.2.1 / ModusToolbox 3.9.0",
+  "tracking_reference_commit": "ba88746a13831f0f20d87ff3e6b748445b5838df",
+  "btstack_integration_commit": "0ce7133b380ab7b8bc5309a7902c65a520783c9e",
+  "required_dependency_patch": "../scripts/patch-btstack.py",
+  "original_firmware_restore": "../Restore-Original.cmd",
+  "status": "Legacy tracking-only BLE image; current checked-in source is 0.2.0"
+}

@@ -1,0 +1,381 @@
+[
+  {
+    "version": "1.4.1",
+    "name": "presence_detection_and_tracking",
+    "board": "CSK",
+    "build": "eaf479a",
+    "cpu_freq": 150000000,
+    "cpu": "Cortex-M4",
+    "algo_info": {
+      "version": "1.2.1-6253c6e+common.indoorSmartar17",
+      "name": "common",
+      "is_configurable": true,
+      "user_configuration_schema": {
+        "type": "group",
+        "title": "Presence Detection and Tracking Use-Case Settings",
+        "description": "Configuration settings for presence detection and tracking use case",
+        "entries": {
+          "sensor_mounting": {
+            "type": "group",
+            "title": "Sensor Mounting",
+            "description": "Radar sensor mounting and orientation configuration",
+            "entries": {
+              "orientation_tx": {
+                "type": "enum",
+                "title": "TX Antenna Orientation",
+                "description": "Transmit antenna orientation configuration",
+                "enumeration": {
+                  "TopLeft": 0,
+                  "BottomLeft": 1,
+                  "TopRight": 2,
+                  "BottomRight": 3
+                },
+                "default": 0
+              },
+              "tilt_angle_deg": {
+                "type": "float",
+                "title": "Tilt Angle [deg]",
+                "description": "Radar tilt angle in degrees (positive is downward)",
+                "min": -45.0,
+                "max": 45.0,
+                "step": 0.5,
+                "default": 0
+              },
+              "mounting_height_m": {
+                "type": "float",
+                "title": "Mounting Height [m]",
+                "description": "Radar mounting height above ground in meters",
+                "min": 0.5,
+                "max": 5.0,
+                "step": 0.1,
+                "default": 1.5
+              }
+            }
+          },
+          "fov": {
+            "type": "group",
+            "title": "Field of View",
+            "description": "Field of view configuration for detection area",
+            "entries": {
+              "range_m": {
+                "type": "group",
+                "title": "Range [m]",
+                "description": "Range settings in meters",
+                "entries": {
+                  "min": {
+                    "type": "float",
+                    "title": "Min. Range [m]",
+                    "description": "Minimum detection range in meters",
+                    "min": 0.0,
+                    "max": 20.0,
+                    "step": 0.001,
+                    "default": 0
+                  },
+                  "max": {
+                    "type": "float",
+                    "title": "Max. Range [m]",
+                    "description": "Maximum detection range in meters",
+                    "min": 0.0,
+                    "max": 20.0,
+                    "step": 0.001,
+                    "default": 10
+                  }
+                }
+              },
+              "angle_deg": {
+                "type": "group",
+                "title": "Azimuth Angle [deg]",
+                "description": "Azimuth angle settings in degrees",
+                "entries": {
+                  "min": {
+                    "type": "float",
+                    "title": "Min. Azimuth Angle [deg]",
+                    "description": "Minimum azimuth angle in degrees (field of view)",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 1.0,
+                    "default": -90
+                  },
+                  "max": {
+                    "type": "float",
+                    "title": "Max. Azimuth Angle [deg]",
+                    "description": "Maximum azimuth angle in degrees (field of view)",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 1.0,
+                    "default": 90
+                  }
+                }
+              }
+            }
+          },
+          "angle_correction": {
+            "type": "group",
+            "title": "Angle Correction",
+            "description": "1D piecewise-linear azimuth correction applied to tracker output",
+            "entries": {
+              "enable": {
+                "type": "bool",
+                "title": "Enable",
+                "description": "Enable angle correction",
+                "default": 0
+              },
+              "outside_policy": {
+                "type": "enum",
+                "title": "Outside Policy",
+                "description": "Correction policy for azimuths beyond the calibration node range. Clamp=0 uses the nearest boundary node's correction; None=1 applies no correction.",
+                "enumeration": {
+                  "Clamp": 0,
+                  "None": 1
+                },
+                "default": 0
+              },
+              "edge_handling": {
+                "type": "enum",
+                "title": "Edge Handling",
+                "description": "Post-calibration handling for detections whose corrected azimuth exceeds \u00b1edge_clip_deg. Clip=0 clamps; Drop=1 removes the track; None=2 is a no-op.",
+                "enumeration": {
+                  "Clip": 0,
+                  "Drop": 1,
+                  "None": 2
+                },
+                "default": 2
+              },
+              "edge_clip_deg": {
+                "type": "float",
+                "title": "Edge Clip Angle [deg]",
+                "description": "Azimuth threshold in degrees used by clip/drop edge handling",
+                "min": 0.0,
+                "max": 90.0,
+                "step": 1.0,
+                "default": 75
+              },
+              "measured_deg": {
+                "type": "group",
+                "title": "Angle Correction [deg]",
+                "description": "What the sensor reports at each true node position (enter the sensor reading when the target is at that angle)",
+                "entries": {
+                  "measured_at_m70": {
+                    "type": "float",
+                    "title": "Measured at -70\u00b0",
+                    "description": "Measured azimuth when target is at -70\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": -70
+                  },
+                  "measured_at_m60": {
+                    "type": "float",
+                    "title": "Measured at -60\u00b0",
+                    "description": "Measured azimuth when target is at -60\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": -60
+                  },
+                  "measured_at_m50": {
+                    "type": "float",
+                    "title": "Measured at -50\u00b0",
+                    "description": "Measured azimuth when target is at -50\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": -50
+                  },
+                  "measured_at_m40": {
+                    "type": "float",
+                    "title": "Measured at -40\u00b0",
+                    "description": "Measured azimuth when target is at -40\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": -40
+                  },
+                  "measured_at_m30": {
+                    "type": "float",
+                    "title": "Measured at -30\u00b0",
+                    "description": "Measured azimuth when target is at -30\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": -30
+                  },
+                  "measured_at_m20": {
+                    "type": "float",
+                    "title": "Measured at -20\u00b0",
+                    "description": "Measured azimuth when target is at -20\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": -20
+                  },
+                  "measured_at_m10": {
+                    "type": "float",
+                    "title": "Measured at -10\u00b0",
+                    "description": "Measured azimuth when target is at -10\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": -10
+                  },
+                  "measured_at_0": {
+                    "type": "float",
+                    "title": "Measured at 0\u00b0",
+                    "description": "Measured azimuth when target is at 0\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": 0
+                  },
+                  "measured_at_p10": {
+                    "type": "float",
+                    "title": "Measured at +10\u00b0",
+                    "description": "Measured azimuth when target is at +10\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": 10
+                  },
+                  "measured_at_p20": {
+                    "type": "float",
+                    "title": "Measured at +20\u00b0",
+                    "description": "Measured azimuth when target is at +20\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": 20
+                  },
+                  "measured_at_p30": {
+                    "type": "float",
+                    "title": "Measured at +30\u00b0",
+                    "description": "Measured azimuth when target is at +30\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": 30
+                  },
+                  "measured_at_p40": {
+                    "type": "float",
+                    "title": "Measured at +40\u00b0",
+                    "description": "Measured azimuth when target is at +40\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": 40
+                  },
+                  "measured_at_p50": {
+                    "type": "float",
+                    "title": "Measured at +50\u00b0",
+                    "description": "Measured azimuth when target is at +50\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": 50
+                  },
+                  "measured_at_p60": {
+                    "type": "float",
+                    "title": "Measured at +60\u00b0",
+                    "description": "Measured azimuth when target is at +60\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": 60
+                  },
+                  "measured_at_p70": {
+                    "type": "float",
+                    "title": "Measured at +70\u00b0",
+                    "description": "Measured azimuth when target is at +70\u00b0",
+                    "min": -90.0,
+                    "max": 90.0,
+                    "step": 0.1,
+                    "default": 70
+                  }
+                }
+              }
+            }
+          },
+          "tracker": {
+            "type": "group",
+            "title": "Tracker",
+            "description": "Tracker sensitivity and feature settings",
+            "entries": {
+              "macro_sensitivity": {
+                "type": "float",
+                "title": "Macro Sensitivity",
+                "description": "Sensitivity for dynamic target detection. 1.0 = maximum sensitivity (base thresholds). Lower values raise confirm/unconfirm thresholds, reducing false dynamic tracks at the cost of slower confirmation.",
+                "min": 0.0,
+                "max": 1.0,
+                "step": 0.05,
+                "default": 1
+              },
+              "micro_sensitivity": {
+                "type": "float",
+                "title": "Micro Sensitivity",
+                "description": "Sensitivity for static target detection. 1.0 = maximum sensitivity (base thresholds). Lower values raise confirm/unconfirm thresholds, reducing false static tracks at the cost of slower confirmation.",
+                "min": 0.0,
+                "max": 1.0,
+                "step": 0.05,
+                "default": 1
+              },
+              "safe_mode_as_default": {
+                "type": "bool",
+                "title": "Safe Mode",
+                "description": "When enabled, dynamic track creation requires a prior confirmed dynamic track within the configured timeout. Reduces false positives in environments with strong static clutter.",
+                "default": 1
+              },
+              "room_size_detection": {
+                "type": "bool",
+                "title": "Room Size Detection",
+                "description": "When enabled, the tracker automatically learns the room boundaries from confirmed dynamic tracks and restricts new track creation to the detected room extent.",
+                "default": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "event_info": {
+      "detection_type_mapping": {
+        "1": "CW Macro",
+        "2": "CW Micro",
+        "3": "CW Static"
+      }
+    },
+    "rtt": {
+      "addr": "0x8014c80",
+      "channel": 1
+    },
+    "sensor_info": {
+      "driver_version": "1.0.8",
+      "name": "BGT60CUTR13",
+      "is_configurable": false,
+      "xtal_mhz": 80.0
+    }
+  },
+  {
+    "ts": "00:00:29.423",
+    "tracks": {},
+    "detections": {
+      "attributes": [
+        "range",
+        "azimuth",
+        "elevation",
+        "doppler",
+        "magnitude",
+        "type"
+      ],
+      "data": [
+        [
+          1.05,
+          -50.1,
+          1.4,
+          0.0,
+          44.6,
+          3
+        ]
+      ]
+    },
+    "elapsed_ms": 11,
+    "frames_dropped": 0
+  }
+]
