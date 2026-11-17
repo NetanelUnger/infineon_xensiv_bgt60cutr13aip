@@ -19,6 +19,14 @@
 
 הכרטיס מפעיל את הרדאר ומפרסם את עצמו לאחר אתחול. הגדרות שהוחלו זמניות עד אתחול; אפשר לייצא אותן ל־JSON ולהחזיר דרך הדף. טעינת קובץ ממלאת את הטופס, והחלה היא פעולה נפרדת. עדכון קושחה מתבצע ב־USB/KitProg3; אין BLE OTA.
 
+## האתר בענן
+
+כתובת: https://yellow-coast-0adb04103.4.azurestaticapps.net
+
+GitHub Actions מפרסם רק את תיקיית `web/` ל־Azure Static Web Apps, ללא בניית Node, API או קושחה. הפריסה מופעלת ב־push לענף `main` שמשנה קובץ ב־`web/` או את קובץ הפריסה `.github/workflows/azure-static-web-apps-yellow-coast-0adb04103.yml`. שינוי בקושחה, בתמונות HEX או בתיעוד שורש בלבד אינו מפעיל פריסה. אין פריסות Preview של Pull Requests.
+
+ה־Deployment token נשאר ב־GitHub Secret שנוצר על ידי Azure. האתר בענן מספק את הממשק וה־WIKI; חיבור BLE נעשה מהמחשב של המבקר לרדאר הקרוב אליו, לאחר בחירת החיישן בדפדפן. אין צורך ב־Start-Radar.cmd בעת שימוש בכתובת הענן.
+
 ## צריבה ושחזור בלחיצה כפולה
 
 נדרשת התקנת [XENSIV CMOS Radar Visualization Tool 1.6.0](https://softwaretools.infineon.com/tools/com.ifx.tb.tool.xensivcmosradarvisualizationtool), הכוללת את OpenOCD המשמש כאן. **לצריבת הקבצים המוכנים אין צורך ב־ModusToolbox.**
