@@ -1,0 +1,50 @@
+/* Shared NatiLab identity. Keep sensor visual encodings independent of the chrome. */
+:root{--paper:#f4efe6;--ink:#17221f;--muted:#52645c;--line:#c9c5ba;--card:#fbf8f1;--accent:#e54b2f;--accent-dark:#a52f1d;--technical:#0d665b;--teal:#0d665b;font-family:Arial,"Noto Sans Hebrew","Segoe UI",sans-serif;color:var(--ink);background:var(--paper)}
+body{background:linear-gradient(#17221f07 1px,transparent 1px),var(--paper);background-size:100% 32px;min-width:320px}
+.lab-navigation{display:flex;flex-wrap:wrap;align-items:center;gap:12px 25px;max-width:1320px;margin:auto;padding:14px 0;border-bottom:1px solid var(--line);font-size:13px;font-weight:700}
+.lab-navigation a{color:var(--ink);text-decoration:none;text-underline-offset:4px}
+.lab-navigation a:hover{color:var(--accent-dark);text-decoration:underline}
+.lab-navigation a[aria-current=page]{color:var(--accent-dark)}
+.lab-navigation .home-brand{font-size:20px;letter-spacing:-1px;margin-inline-end:auto}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.demo-page>header{border-top:6px solid var(--accent);background:var(--paper);padding:20px max(24px,calc((100vw - 1320px)/2));min-height:98px}
+.demo-page>.lab-navigation{width:calc(100% - 48px)}
+.demo-page .brand-icon{font-size:34px;color:var(--accent-dark)}
+.demo-page .brand strong{font-size:24px;letter-spacing:-1px}
+.demo-page .brand small{color:var(--muted)}
+.demo-page main{max-width:1368px;padding:32px 24px}
+.demo-page .intro{padding:8px 0 26px;border-bottom:1px solid var(--ink);margin-bottom:24px}
+.demo-page h1{font-size:clamp(28px,3.2vw,44px);font-weight:800;letter-spacing:-1.5px;line-height:1.2}
+.demo-page .eyebrow{color:var(--accent-dark);font-weight:800;letter-spacing:.04em}
+.demo-page .stats{gap:30px}.demo-page .stats strong{color:var(--technical)}
+.demo-page .card{background:var(--card);border-color:var(--line);border-radius:4px;box-shadow:none}
+.demo-page .radar-card{border-top:3px solid var(--technical)}
+.demo-page .card-head{border-color:#ddd8cd}
+.demo-page .card-head h2{font-size:18px}
+.demo-page button,.demo-page .file-button{border-color:var(--line);border-radius:3px;background:var(--card);color:var(--ink);font-weight:700}
+.demo-page button:hover:not(:disabled),.demo-page .file-button:hover{background:#e9e5dc}
+.demo-page button.primary{background:var(--technical);border-color:var(--technical);color:#fff}
+.demo-page button.primary:hover:not(:disabled){background:#084b43}
+.demo-page select,.demo-page input[type=number]{background:#fffdf7;border-color:var(--line);color:var(--ink);border-radius:3px}
+.demo-page #notice{border-color:#b8c9bd;background:#e5ede6;border-radius:3px}
+.demo-page #notice.error{background:#fff0e9;border-color:#f0b8a3;color:#8e3920}
+.demo-page #emptyPlot{background:#fbf8f1ed;color:var(--technical);max-width:90%;white-space:normal;text-align:center}
+.demo-page th{background:#e9e5dc;color:var(--muted)}.demo-page td{border-color:#ddd8cd}
+.demo-page .settings-fields details{border-color:#ddd8cd}
+.demo-page .step{color:var(--accent-dark);font-size:22px}
+.demo-page .research-plots figure{border-color:var(--line);border-radius:3px;background:#fffdf7}
+.demo-page .research-note{background:#e5ede6;border-color:var(--technical)}
+.demo-page footer{border-top:1px solid var(--line);padding-top:20px;color:var(--muted)}
+.demo-page .research-card{border-top:3px solid var(--accent)}
+.demo-page .research-card>.card-head{padding-inline:0}
+.demo-page .workspace>*{min-width:0}
+.demo-page .connection{justify-content:flex-end}
+.masthead .wordmark strong{font-size:24px;letter-spacing:-.04em}
+.masthead .masthead-inner{min-height:92px}
+.wiki-page .lab-navigation{width:100%;padding-bottom:16px}
+.wiki-page .hero-note{transform:none;border-radius:3px}
+.wiki-page .shell{max-width:1240px}
+.wiki-page .hero{padding-top:44px}
+@media(max-width:800px){.demo-page>header{padding:16px}.demo-page main{padding:24px 14px}.demo-page>.lab-navigation{width:calc(100% - 28px)}.demo-page .connection{justify-content:flex-start}.demo-page .intro{padding-bottom:22px}.demo-page .stats{justify-content:space-between}.lab-navigation{gap:12px 18px;font-size:12px}.lab-navigation .home-brand{flex-basis:100%;font-size:20px}.wiki-page .hero{padding-top:30px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+@media print{.lab-navigation{display:none}}
