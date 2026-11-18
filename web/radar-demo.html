@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NATI LAB · הדגמת אמת</title>
+  <meta name="description" content="הדמיה של שידור צ׳ירפ, קליטה בשלוש אנטנות וקריאת דגימות FIFO.">
+  <link rel="stylesheet" href="wiki.css"><link rel="stylesheet" href="natilab.css"><link rel="stylesheet" href="guide-shell.css"><link rel="icon" href="data:,">
+</head>
+<body class="wiki-page">
+<a class="skip" href="#content">דילוג לתוכן</a>
+<header class="nl-header"><div class="nl-header-inner"><a class="nl-brand" href="https://natilab.net/" aria-label="NatiLab — עמוד הבית"><strong dir="ltr">NatiLab</strong><span class="nl-tagline">לא רק מה חדש. מה אפשר לבנות מזה.</span><small class="nl-caption">מדריכים, ניסויים וכלים מהמעבדה</small></a><a class="nl-home" href="https://natilab.net/">חזרה ל־NatiLab ↗</a></div></header>
+<nav class="nl-nav" aria-label="ניווט במעבדת הרדאר"><div class="nl-nav-inner"><span class="nl-project" dir="ltr">RADAR / XENSIV</span><a href="index.html" id="dashboardLink">דמו רדאר</a><a href="wiki.html">מדריך הרדאר</a><a aria-current="page" href="radar-demo.html">הדגמת אמת</a><a href="wiki.html#install">הורדה וצריבה</a><a href="wiki.html#data">נתונים ועיבוד</a></div></nav>
+<main class="shell" id="content"><article class="wiki-article"><h1>הדגמת אמת</h1>
+ <section id="fifo-river"><h2>מצ׳ירפ אחד לנהר של דגימות</h2>
+ <p>לחצו על הפעלה ועקבו אחרי השידור עד ללוח המחזיר ובחזרה לשלוש האנטנות. המערבל וה־ADC בכל ערוץ הופכים את ההחזר לסדרת מספרים. ההנפשה מאטה ומפרידה את השלבים כדי שיהיה אפשר לעקוב אחריהם.</p>
+ <label>העצם בהדמיה <select id="riverTarget"><option value="4">לוח קרוב</option><option value="9">לוח רחוק</option><option value="0">בלי לוח</option></select></label>
+ <button type="button" id="riverPlay">הפעלה</button> <button type="button" id="riverStep">צ׳ירפ אחד</button>
+ <canvas id="riverPlot" width="650" height="445" aria-label="מסלול השידור וההחזר, מפת דגימות ופרופיל טווח"></canvas>
+ <output id="riverRead"></output>
+ <p>קוראים את הנהר משמאל לימין. בכל רגע דגימה מצטרפים שלושה ערכים סמוכים, אחד מכל אנטנה. הבהירות מציינת את ערך הדגימה. אחרי 64 שלשות מתחילה שורה חדשה. 17 השורות יחד מציגות את סדר הנתונים במסגרת אחת לאחר מיצוע חומרה של 16. בפועל הבקר קורא מהתור תוך כדי הפעולה.</p>
+ <p>בחרו לוח קרוב והשלימו צ׳ירפ. הפסים החוזרים בשורה מעידים על תנודה באות ההפרש. הגרף התחתון מפרק את 64 הדגימות של RX1 לתדרים ומציג את העוצמה בכל תא טווח. עברו ללוח רחוק יותר וראו איך הפסים מצטופפים והשיא זז ימינה. בחרו ״בלי לוח״ כדי להשוות לרקע. הנתונים מדומים ותאי הטווח מוצגים ללא כיול למטרים.</p></section>
+ <script defer src="wiki-river.js"></script>
+</article></main></body></html>
