@@ -1,0 +1,23 @@
+/* NatiLab guide shell v1: keep identical in the N6 and radar projects. */
+body { border-top: 0; }
+.nl-header, .demo-page > .nl-header { display:block; position:relative; padding:0; min-height:0; border:0; border-top:6px solid #e54b2f; border-bottom:1px solid #c9c5ba; background:#f4efe6; color:#17221f; font-family:Arial,"Noto Sans Hebrew","Segoe UI",sans-serif; }
+.nl-header *, .nl-nav * { box-sizing:border-box; }
+.nl-header-inner { width:min(1240px,calc(100% - 48px)); min-height:100px; margin-inline:auto; display:flex; justify-content:space-between; align-items:center; gap:24px; padding:16px 0; direction:rtl; }
+.nl-brand { display:block; color:#17221f; text-decoration:none; }
+.nl-brand strong { display:block; font-size:24px; line-height:1.2; font-weight:800; letter-spacing:-.04em; }
+.nl-tagline { display:block; margin-top:4px; font-size:14px; line-height:1.35; font-weight:800; }
+.nl-caption { display:block; margin-top:2px; color:#52645c; font-size:11px; line-height:1.4; }
+.nl-home { display:inline-flex; align-items:center; min-height:44px; padding:8px 14px; border:1px solid #c9c5ba; border-radius:3px; color:#17221f; text-decoration:none; font-size:13px; font-weight:700; white-space:nowrap; }
+.nl-brand:hover, .nl-home:hover { color:#a52f1d; }
+.nl-home:hover { background:#fbf8f1; }
+.nl-nav { width:100%; margin:0; padding:0; background:#fbf8f1; border-bottom:1px solid #c9c5ba; color:#17221f; direction:rtl; font-family:Arial,"Noto Sans Hebrew","Segoe UI",sans-serif; }
+.nl-nav-inner { width:min(1240px,calc(100% - 48px)); margin-inline:auto; display:flex; flex-wrap:wrap; align-items:center; gap:4px 22px; padding:6px 0; }
+.nl-project { font-size:12px; font-weight:800; color:#52645c; margin-inline-end:8px; }
+.nl-nav a, .nl-nav button { display:inline-flex; align-items:center; justify-content:center; min-height:44px; margin:0; padding:8px 2px; border:0; border-bottom:3px solid transparent; border-radius:0; background:transparent; color:#17221f; font:700 13px Arial,"Noto Sans Hebrew","Segoe UI",sans-serif; text-decoration:none; cursor:pointer; }
+.nl-nav a:hover, .nl-nav button:hover { background:transparent; color:#a52f1d; }
+.nl-nav [aria-current="page"] { color:#a52f1d; border-bottom-color:#e54b2f; }
+.nl-header a:focus-visible, .nl-nav a:focus-visible, .nl-nav button:focus-visible { outline:3px solid #e54b2f; outline-offset:3px; }
+.radar-device-bar { width:min(1240px,calc(100% - 48px)); margin:20px auto 0; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.radar-device-bar .connection { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+@media(max-width:600px) { .nl-header-inner { width:calc(100% - 32px); min-height:100px; gap:12px; flex-wrap:wrap; } .nl-home { padding:6px 10px; } .nl-nav-inner { width:calc(100% - 32px); gap:2px 16px; } .nl-project { flex-basis:100%; padding-top:6px; } .radar-device-bar { width:calc(100% - 28px); } }
+@media print { .nl-nav, .nl-home { display:none; } }
