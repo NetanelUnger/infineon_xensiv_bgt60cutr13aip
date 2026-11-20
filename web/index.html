@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="he" dir="rtl">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Radar CSK · מעקב חי</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="natilab.css"><link rel="stylesheet" href="guide-shell.css"><link rel="icon" href="data:,"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Radar CSK · מעקב חי</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="radar-position.css"><link rel="stylesheet" href="natilab.css"><link rel="stylesheet" href="guide-shell.css"><link rel="icon" href="data:,"></head>
 <body class="demo-page">
 <header class="nl-header"><div class="nl-header-inner"><a class="nl-brand" href="https://natilab.net/" aria-label="NatiLab — עמוד הבית"><strong dir="ltr">NatiLab</strong><span class="nl-tagline">לא רק מה חדש. מה אפשר לבנות מזה.</span><small class="nl-caption">מדריכים, ניסויים וכלים מהמעבדה</small></a><a class="nl-home" href="https://natilab.net/">חזרה ל־NatiLab ↗</a></div></header>
 <nav class="nl-nav" aria-label="ניווט במעבדת הרדאר"><div class="nl-nav-inner"><span class="nl-project" dir="ltr">RADAR / XENSIV</span><a href="index.html" aria-current="page">דמו רדאר</a><a href="wiki.html">מדריך הרדאר</a><a href="radar-demo.html">הדגמת אמת</a><a href="wiki.html#install">הורדה וצריבה</a><a href="wiki.html#data">נתונים ועיבוד</a></div></nav>
@@ -16,6 +16,33 @@
 <aside class="card setup-card"><div class="card-head"><div><h2>הגדרה ראשונית</h2><a class="wiki-help" href="wiki.html#settings" target="radar-wiki" title="פתיחת הסבר בחלון נפרד">מה כל הגדרה משנה? ↗</a><span class="muted">נקראת מהחיישן המחובר</span></div><span class="step">01</span></div><p class="setup-help">הצב את החיישן ביציבות, וקבע גובה, הטיה וכיוון אנטנה לפי ההתקנה בפועל.</p><form id="settingsForm"><div id="settingsFields" class="settings-fields"><div class="placeholder">האפשרויות יופיעו לאחר חיבור וקריאת תצורת החיישן.</div></div><div class="setup-actions"><button id="apply" class="primary" type="submit" disabled>החל הגדרות על החיישן</button><button id="refresh" type="button" disabled>קרא מחדש</button></div></form><p class="muted small">הגדרות חלות בזיכרון עד לאתחול הכרטיס. אפשר לשמור קובץ במחשב ולטעון אותו בחיבור הבא.</p><div class="file-actions"><button id="export" disabled>שמירת הגדרות</button><label class="file-button">טעינת קובץ<input id="import" type="file" accept=".json,application/json" disabled></label></div></aside>
 <section class="card table-card"><div class="card-head"><div><h2>מסלולים מזוהים</h2><a class="wiki-help" href="wiki.html#live" target="radar-wiki" title="פתיחת הסבר בחלון נפרד">פירוש השדות בטבלה ↗</a></div><span id="dataAge" class="muted">אין נתונים</span></div><div class="table-scroll"><table><thead><tr><th>מסלול</th><th>מרחק · m</th><th>אזימוט · °</th><th>גובה זוויתי · °</th><th>מהירות · m/s</th><th>פעילות</th></tr></thead><tbody id="tracks"><tr><td colspan="6" class="empty-row">אין מסלולים להצגה</td></tr></tbody></table></div></section>
 </div>
+<section class="card wifi-card" id="live-rx" aria-labelledby="wifiTitle">
+ <div class="card-head"><div><h2 id="wifiTitle">שלוש אנטנות הקליטה בזמן אמת</h2><p class="muted">חברו את החיישן באמצעות Bluetooth והגדירו את רשת ה־Wi-Fi של המחשב. אם הכרטיס כבר מחובר לרשת, אפשר להציג את הדגימות מיד כשהכתובת שלו מופיעה.</p></div></div>
+ <div class="wifi-body">
+  <p id="wifiUnavailable" hidden>נדרשת קושחה 0.3.0 ומעלה לחיבור Wi-Fi. יכולות ה־BLE הקיימות זמינות בקושחה הנוכחית.</p>
+  <form id="wifiForm" class="wifi-form" autocomplete="off">
+   <label>שם הרשת (SSID)<input id="wifiSsid" type="text" dir="ltr" required autocomplete="off" spellcheck="false"></label>
+   <label>סיסמת הרשת<input id="wifiPassword" type="password" dir="ltr" autocomplete="new-password"></label>
+   <button id="wifiJoin" class="primary" disabled>חיבור לרשת</button>
+   <button id="wifiRefresh" type="button" disabled>רענון מצב</button><button id="wifiLeave" type="button" disabled>ניתוק Wi-Fi</button>
+  </form>
+  <p class="muted">פרטי הרשת נשמרים בכרטיס עד לאתחול. חיבור ה־BLE ממשיך לפעול במקביל.</p>
+  <p id="wifiStatus" role="status" aria-live="polite">התחבר לחיישן ב־BLE כדי להגדיר את הרשת.</p>
+  <div class="wifi-endpoint"><span>כתובת הנתונים:</span> <output id="wifiAddress" dir="ltr">—</output></div>
+  <div class="research-tools"><button id="liveRxStart" class="primary" disabled>הצג אנטנות בזמן אמת</button><button id="liveRxStop" disabled>עצור תצוגה חיה</button></div>
+  <figure class="fifo-comparison">
+   <figcaption>דגימות ה־FIFO · צ׳ירפ ראשון מכל מסגרת</figcaption>
+   <div id="liveRxTraces" class="fifo-traces"></div>
+   <small>מספר הדגימה בצ׳ירפ. בכל עמודה שלוש האנטנות נדגמו באותו רגע.</small>
+   <p id="liveRxReading">ממתין לדגימות מהכרטיס.</p>
+  </figure>
+  <div class="research-tools"><button id="rawConnect" disabled>חיבור לנתונים דרך Wi-Fi</button><button id="rawDisconnect" disabled>ניתוק נתונים</button><button id="rawRecord" class="primary" disabled>הקלטה מלאה לקובץ</button><button id="rawStop" disabled>עצירה ושמירה</button><button id="rawSave" disabled>שמירת ההקלטה</button></div>
+  <p id="rawStatus" role="status" aria-live="polite">ממתין לחיבור נתונים.</p>
+  <dl class="raw-stats"><div><dt>מסגרות</dt><dd id="rawFrames">0</dd></div><div><dt>צ׳ירפים</dt><dd id="rawChirps">0</dd></div><div><dt>נפח · MiB</dt><dd id="rawBytes">0.00</dd></div><div><dt>מסגרות לשנייה</dt><dd id="rawRate">0.0</dd></div><div><dt>פערים / שגיאות איסוף</dt><dd id="rawLoss">0 / 0</dd></div></dl>
+  <p class="research-note">נשמרות כל הדגימות: 17 צ׳ירפים × 64 דגימות × 3 אנטנות בכל מסגרת, לאחר מיצוע חומרה של 16. הקובץ כולל את הגדרות הרדאר, זמני האיסוף ומוני האובדן.</p>
+  <p class="muted">בדפדפן תומך, הנתונים נכתבים לקובץ במהלך ההקלטה. אחרת, ההקלטה נשמרת זמנית במחשב עד 64 MiB ואז אפשר להוריד אותה. השאר את הדף פתוח עד סיום השמירה.</p>
+ </div>
+</section>
 <section class="card research-card" aria-labelledby="researchTitle">
  <div class="card-head"><div><span class="eyebrow">ניסוי והקלטה</span><h2 id="researchTitle">החזרים לאורך זמן</h2><a class="wiki-help" href="wiki.html#start" target="radar-wiki" title="פתיחת הסבר בחלון נפרד">מדריך להקלטות ולנתונים ↗</a><p class="muted">הקלטה על הכרטיס, הורדה ב־BLE וניתוח בדיעבד. גם החזרים מעצמים נייחים נשמרים.</p></div></div>
  <div class="research-tools"><label>משך הקלטה <select id="captureDuration"><option value="2000">2 שניות</option><option value="5000" selected>5 שניות</option><option value="10000">10 שניות</option></select></label><button id="captureStart" class="primary" disabled>הקלט והורד</button><button id="captureRecover" disabled>הורד הקלטה אחרונה</button></div>

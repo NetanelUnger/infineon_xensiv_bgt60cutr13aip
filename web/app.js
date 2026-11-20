@@ -1,5 +1,7 @@
 import {SERVICE,RX,TX,commandPacket,Reassembler,parseFrame,polar,validateSettings,sameSettings} from './protocol.js';
 import {createResearchUI} from './research.js';
+import {createWifiUI} from './wifi.js';
+import {createLiveRxView} from './live-rx.js';
 const $=id=>document.getElementById(id);
 const state={device:null,rx:null,tx:null,info:null,settings:null,schema:null,ready:false,busy:false,paused:false,frame:null,last:0,times:[],messages:0,errors:0,pending:null};
 const ns='http://www.w3.org/2000/svg';
@@ -10,9 +12,10 @@ function controls(){const linked=!!state.device?.gatt.connected;$('connect').dis
 function clearFrame(message){state.frame=null;state.last=0;state.times=[];$('trackCount').textContent='—';$('frameRate').textContent='—';$('latency').textContent='—';$('emptyPlot').hidden=false;$('emptyPlot').textContent=message;render();}
 function status(text,kind=''){$('status').textContent=text;$('status').className=`pill ${kind}`;}
 function failPending(error){if(state.pending){clearTimeout(state.pending.timer);state.pending.reject(error);state.pending=null;}}
-function disconnected(){state.ready=false;state.busy=false;state.rx=null;state.tx=null;reassembler.reset();failPending(Error('החיישן התנתק'));clearFrame('החיישן מנותק');status('לא מחובר');controls();notice('החיבור נותק. לחץ על חיבור לחיישן כדי להתחבר שוב.');}
+function disconnected(){state.ready=false;state.busy=false;state.rx=null;state.tx=null;reassembler.reset();failPending(Error('החיישן התנתק'));clearFrame('החיישן מנותק');status('לא מחובר');wifi.onBleDisconnected();controls();notice('החיבור נותק. לחץ על חיבור לחיישן כדי להתחבר שוב.');}
 const reassembler=new Reassembler(receive,error=>{state.errors++;console.warn(error.message);});
 function receive(message){
+  if(message.wifi)wifi.onWifi(message.wifi);
   state.messages++;
   if(message.tracks!==undefined){
     if(!state.paused){state.frame=parseFrame(message);state.last=performance.now();state.times.push(state.last);state.times=state.times.filter(t=>state.last-t<3000);render();}
@@ -53,6 +56,7 @@ $('connect').addEventListener('click',async()=>{
     await readSettings();state.ready=true;state.paused=false;$('pause').textContent='השהיית תצוגה';
     $('deviceInfo').textContent=`${device.name||'Radar-CSK'} · קושחה ${state.info.version} · ${state.info.sensor_info?.name||'BGT60CUTR13'}`;
     status('מחובר · חי','live');notice('החיבור מוכן. בדוק את גובה ההתקנה וכיוון האנטנה, ואז החל הגדרות לפי הצורך.');
+    wifi.onBleConnected();
   }catch(error){state.ready=false;state.device?.gatt.disconnect();status('לא מחובר');notice(error.name==='NotFoundError'?'בחירת ההתקן בוטלה. אפשר לנסות שוב.':error.message,true);}
   finally{state.busy=false;controls();}
 });
@@ -125,4 +129,5 @@ setInterval(()=>{
 },500);
 if(!navigator.bluetooth||!window.isSecureContext)notice('נדרש Chrome או Edge עם Web Bluetooth. הפעל את הדף באמצעות קובץ ההפעלה המקומי.',true);
 const research=createResearchUI({command,getState:()=>state,updateControls:controls});
+const wifi=createWifiUI({command,getState:()=>state,liveView:createLiveRxView()});
 drawGrid();render();controls();

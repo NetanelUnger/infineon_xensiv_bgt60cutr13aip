@@ -2,7 +2,7 @@ export const SERVICE = '83f09d00-62e6-4b88-9c74-2d519c840cb1';
 export const RX = '83f09d01-62e6-4b88-9c74-2d519c840cb1';
 export const TX = '83f09d02-62e6-4b88-9c74-2d519c840cb1';
 export function commandPacket(id, payload) {
-  if (![1,3,7,20,21,22,23].includes(id)) throw Error('Unsupported command');
+  if (![1,3,7,20,21,22,23,30,31,32].includes(id)) throw Error('Unsupported command');
   const bytes = payload === undefined ? new Uint8Array() : new TextEncoder().encode(JSON.stringify(payload));
   if (bytes.length>2048) throw Error('Configuration exceeds device limit');
   const p = new Uint8Array(bytes.length+6), view = new DataView(p.buffer);
