@@ -17,11 +17,17 @@
  <p>לחצו על הפעלה ועקבו אחרי השידור עד ללוח המחזיר ובחזרה לשלוש האנטנות. המערבל וה־ADC בכל ערוץ הופכים את ההחזר לסדרת מספרים. ההנפשה מאטה ומפרידה את השלבים כדי שיהיה אפשר לעקוב אחריהם.</p>
  <label>העצם בהדמיה <select id="riverTarget"><option value="4">לוח קרוב</option><option value="9">לוח רחוק</option><option value="0">בלי לוח</option></select></label>
  <button type="button" id="riverPlay">הפעלה</button> <button type="button" id="riverStep">צ׳ירפ אחד</button>
+ <figure class="fifo-comparison">
+  <figcaption>דגימות ה־FIFO בשלוש אנטנות הקליטה</figcaption>
+  <div id="riverTraces" class="fifo-traces"></div>
+  <small>מספר הדגימה בצ׳ירפ · ערך הדגימה מנורמל באותו סולם בכל השורות</small>
+  <p id="riverTraceReading"></p>
+ </figure>
  <canvas id="riverPlot" width="650" height="445" aria-label="מסלול השידור וההחזר, מפת דגימות ופרופיל טווח"></canvas>
  <output id="riverRead"></output>
  <p>קוראים את הנהר משמאל לימין. בכל רגע דגימה מצטרפים שלושה ערכים סמוכים, אחד מכל אנטנה. הבהירות מציינת את ערך הדגימה. אחרי 64 שלשות מתחילה שורה חדשה. 17 השורות יחד מציגות את סדר הנתונים במסגרת אחת לאחר מיצוע חומרה של 16. בפועל הבקר קורא מהתור תוך כדי הפעולה.</p>
- <p>בחרו לוח קרוב והשלימו צ׳ירפ. הפסים החוזרים בשורה מעידים על תנודה באות ההפרש. הגרף התחתון מפרק את 64 הדגימות של RX1 לתדרים ומציג את העוצמה בכל תא טווח. עברו ללוח רחוק יותר וראו איך הפסים מצטופפים והשיא זז ימינה. בחרו ״בלי לוח״ כדי להשוות לרקע. הנתונים מדומים ותאי הטווח מוצגים ללא כיול למטרים.</p></section>
- <script defer src="wiki-river.js"></script>
+ <p>בחרו לוח קרוב ולחצו על ״צ׳ירפ אחד״. בגרף הטווח מופיעות בכל תא שלוש עמודות. משמאל לימין הן מייצגות את RX1, RX2 ו־RX3, באותם צבעים של שורות הדגימות. עברו ללוח רחוק והשלימו עוד צ׳ירפ. התנודות צפופות יותר בשלוש השורות והשיא בשלושת הערוצים זז לאותו תא רחוק יותר. בחרו ״בלי לוח״ כדי לראות את רעש הרקע. תאי הטווח בהדגמה מוצגים ללא כיול למטרים.</p></section>
+ <script type="module" src="wiki-river.js"></script>
  <section id="where-is-target" class="position-lesson" aria-labelledby="positionTitle">
   <p class="kicker">מרחק + כיוון = מיקום ביחס לחיישן</p>
   <h2 id="positionTitle">איך מוצאים את מיקום הלוח?</h2>
@@ -62,6 +68,12 @@
     <text x="53" y="332" class="position-small" text-anchor="middle">שמאל (−)</text><text x="467" y="332" class="position-small" text-anchor="middle">ימין (+)</text>
    </svg>
    <p class="position-legend">המניפה הירוקה היא אזור הפלט שנבחר בתוכנה. גבול מקווקו אינו קיר שעוצר גלי רדיו.</p>
+   <figure class="fifo-comparison">
+    <figcaption>כך נראה צ׳ירפ אחד ב־FIFO במיקום שבחרתם</figcaption>
+    <div id="positionTraces" class="fifo-traces"></div>
+    <small>מספר הדגימה בצ׳ירפ · ערך הדגימה מנורמל באותו סולם בכל השורות</small>
+   </figure>
+   <p>הרחיקו את הלוח וראו איך נכנסות יותר תנודות לאותן 64 דגימות. אחר כך עקבו אחרי פסגה ליד קו אנכי ולחצו על ״אותו מרחק, בצד השני״. מספר התנודות נשאר קבוע, והפסגות של RX3 זזות ביחס ל־RX1. במנח הערכה שבהדגמה RX1 ו־RX2 נמצאים זה מעל זה. כשהלוח בגובה החיישן, התנודות בשתי השורות האלה זהות. <a href="https://www.infineon.com/assets/row/public/documents/24/44/infineon-ug113247-kit-csk-bgt60cutr13-xensiv-connected-sensor-kit-usermanual-en.pdf">זוגות האנטנות במדריך הערכה, איורים 29 ו־30 ↗</a></p>
    <p id="positionStatus" class="position-status" role="status" aria-live="polite"></p>
    <dl class="position-values"><div><dt>מיקום ימינה / שמאלה</dt><dd id="positionX" dir="ltr"></dd></div><div><dt>מיקום קדימה</dt><dd id="positionForward" dir="ltr"></dd></div><div><dt>הפרש פאזה בזוג אופקי אידיאלי</dt><dd id="positionPhase" dir="ltr"></dd></div></dl>
    <p id="positionReading"></p>

@@ -1,5 +1,6 @@
+import {createFifoTraces, samplesPerChirp} from './fifo-traces.js';
+
 // Educational forward model, independent of acquisition, BLE and RAW analysis.
-// The horizontal pair is generic: no RX channel mapping/calibration is assumed.
 export function positionModel(rangeM,angleDeg,fovDeg) {
   if(![rangeM,angleDeg,fovDeg].every(Number.isFinite)||rangeM<=0||Math.abs(angleDeg)>90||fovDeg<=0||fovDeg>180)throw RangeError('Invalid geometry');
   const angle=angleDeg*Math.PI/180,wavelengthM=299792458/60e9,spacingM=.00235;
@@ -9,12 +10,18 @@ export function positionModel(rangeM,angleDeg,fovDeg) {
 
 export function createPositionLesson() {
   const $=id=>document.getElementById(id),origin={x:260,y:300},scale=230;
+  const renderTraces = createFifoTraces($('positionTraces'));
   const point=(r,a)=>({x:origin.x+scale*r*Math.sin(a*Math.PI/180),y:origin.y-scale*r*Math.cos(a*Math.PI/180)});
   const coords=p=>`${p.x.toFixed(2)} ${p.y.toFixed(2)}`;
   const signed=(v,digits=0)=>`${v>0?'+':''}${v.toFixed(digits)}`;
   function render() {
     const range=Number($('positionRange').value),angle=Number($('positionAngle').value),fov=Number($('positionFov').value);
     const model=positionModel(range,angle,fov),target=point(range,angle),left=point(1,-fov/2),right=point(1,fov/2);
+    // Illustrative sweep scale: ten beat cycles per metre over one chirp.
+    const cycles = 10 * range;
+    const phases = [0, 0, model.phaseDeg * Math.PI / 180];
+    renderTraces(phases.map(phase => Array.from({length: samplesPerChirp}, (_, n) =>
+      0.8 * Math.sin(2 * Math.PI * cycles * n / samplesPerChirp + phase))));
     $('positionRangeValue').value=`${range.toFixed(2)} m`;
     $('positionAngleValue').value=`${signed(angle)}°`;
     $('positionFovValue').value=`${fov}° (±${fov/2}°)`;
@@ -33,7 +40,7 @@ export function createPositionLesson() {
     $('positionPhase').textContent=`${signed(model.phaseDeg,1)}°`;
     $('positionStatus').classList.toggle('outside',!model.inside);
     $('positionStatus').textContent=model.inside?'בתוך תחום הפלט שנבחר. הימצאות בתחום לבדה אינה מבטיחה זיהוי.':'מחוץ לתחום הפלט שנבחר. החזר עשוי להיקלט ב־RAW גם כשהאלגוריתם מסנן את המטרה מהפלט.';
-    $('positionReading').textContent=`המרחק נשאר ${range.toFixed(2)} מטר כשמשנים רק את הזווית. בהעברה לצד השני, המיקום הצדדי וסימן הפרש הפאזה מתהפכים. שינוי ה־FOV כאן משנה רק את אזור הפלט, ולא את המרחק או את הפאזה המחושבת.`;
+    $('positionReading').textContent=`במרחק ${range.toFixed(2)} מטר מתקבלים בהמחשה ${Number(cycles.toFixed(1))} מחזורים לצ׳ירפ בכל אנטנה. הפרש הפאזה של RX3 ביחס ל־RX1 הוא ‎${signed(model.phaseDeg,1)}°. מסנן ה־FOV קובע אילו מיקומים יופיעו בפלט. הדגימות עצמן ממשיכות להיכנס ל־FIFO גם כשהלוח מחוץ למניפה.`;
     $('positionPlotDesc').textContent=`מבט מלמעלה. החיישן במרכז התחתון, קדימה הוא אפס מעלות. הלוח במרחק ${range.toFixed(2)} מטר ובזווית ${signed(angle)} מעלות. גבולות תחום הפלט: ${-fov/2} עד ${fov/2} מעלות. ${model.inside?'בתוך התחום.':'מחוץ לתחום.'}`;
   }
   for(const id of ['positionRange','positionAngle','positionFov'])$(id).addEventListener('input',render);
