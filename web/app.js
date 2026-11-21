@@ -2,9 +2,13 @@ import {SERVICE,RX,TX,commandPacket,Reassembler,parseFrame,polar,validateSetting
 import {createResearchUI} from './research.js';
 import {createWifiUI} from './wifi.js';
 import {createLiveRxView} from './live-rx.js';
+import {createRawAnalysisUI} from './raw-analysis-ui.js';
+import {createLiveLab} from './live-lab.js';
+import {createDashboardTabs} from './dashboard-tabs.js';
 const $=id=>document.getElementById(id);
 const state={device:null,rx:null,tx:null,info:null,settings:null,schema:null,ready:false,busy:false,paused:false,frame:null,last:0,times:[],messages:0,errors:0,pending:null};
 const ns='http://www.w3.org/2000/svg';
+let boardReport=null;
 function svg(tag,attrs,parent) {const node=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))node.setAttribute(k,v);parent.append(node);return node;}
 function textSvg(text,attrs,parent) {const el=svg('text',attrs,parent);el.textContent=text;return el;}
 function notice(message,error=false){$('notice').textContent=message;$('notice').classList.toggle('error',error);}
@@ -18,7 +22,9 @@ function receive(message){
   if(message.wifi)wifi.onWifi(message.wifi);
   state.messages++;
   if(message.tracks!==undefined){
-    if(!state.paused){state.frame=parseFrame(message);state.last=performance.now();state.times.push(state.last);state.times=state.times.filter(t=>state.last-t<3000);render();}
+    const frame=parseFrame(message);
+    boardReport={frame,at:performance.now(),device:state.device};
+    if(!state.paused){state.frame=frame;state.last=performance.now();state.times.push(state.last);state.times=state.times.filter(t=>state.last-t<3000);render();}
   } else if(state.pending){
     state.pending.records.push(message);
     if(message.cmd?.id===state.pending.id){
@@ -120,6 +126,14 @@ $('refresh').onclick=()=>busyAction(async()=>{await readSettings();notice('הה�
 $('export').onclick=()=>{try{const blob=new Blob([JSON.stringify({format:'radar-csk-settings-v1',settings:draft()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='radar-csk-settings.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}catch(e){notice(e.message,true);}};
 $('import').onchange=async event=>{const file=event.target.files[0];if(!file)return;try{if(file.size>20000)throw Error('קובץ ההגדרות גדול מדי');const data=JSON.parse(await file.text());const settings=data.settings??data;validateSettings(state.schema,settings);state.settings=settings;renderSettings();notice('הקובץ נטען לטופס. לחץ על החל הגדרות כדי לשלוח לחיישן.');}catch(e){notice(e.message,true);}event.target.value='';};
 setInterval(()=>{
+  if(!$('wifi').hidden && !$('wifiLab').hidden){
+    const current=state.ready && boardReport?.device===state.device && performance.now()-boardReport.at<3000;
+    if(current){
+      const {tracks,detections}=boardReport.frame;
+      $('boardReading').textContent=[detections.length+' זיהויים',tracks.length+' מסלולים',
+        ...tracks.map(t=>'מסלול #'+t.id+' במרחק '+fmt(t.range)+' מ׳ ובזווית '+fmt(t.azimuth,1)+'°')].join(' · ');
+    }else $('boardReading').textContent=state.ready?'ממתין לעדכון מעקב מהכרטיס.':'פלט המעקב זמין בחיבור BLE לכרטיס.';
+  }
   if(state.last){const age=(performance.now()-state.last)/1000;$('dataAge').textContent=`עדכון אחרון לפני ${age.toFixed(1)} שניות`;
     $('frameRate').textContent=state.times.length>1?((state.times.length-1)*1000/(state.times.at(-1)-state.times[0])).toFixed(1):'—';
     if(age>3&&!state.paused){clearFrame('הנתונים התיישנו · ממתין לעדכון');if(state.ready)status('אין נתונים חדשים','stale');}
@@ -129,5 +143,8 @@ setInterval(()=>{
 },500);
 if(!navigator.bluetooth||!window.isSecureContext)notice('נדרש Chrome או Edge עם Web Bluetooth. הפעל את הדף באמצעות קובץ ההפעלה המקומי.',true);
 const research=createResearchUI({command,getState:()=>state,updateControls:controls});
-const wifi=createWifiUI({command,getState:()=>state,liveView:createLiveRxView()});
+const lab=createLiveLab();
+const wifi=createWifiUI({command,getState:()=>state,liveView:createLiveRxView(),lab});
+createRawAnalysisUI();
+createDashboardTabs(panel=>{lab.setPanel(panel);wifi.setTabActive(panel==='wifi');});
 drawGrid();render();controls();

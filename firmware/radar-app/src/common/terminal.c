@@ -28,6 +28,7 @@
 #include <stdarg.h>
 #include "radar_ble.h"
 #include "research_capture.h"
+#include "radar_wifi.h"
 #include <stdlib.h>
 #include <errno.h>
 
@@ -215,8 +216,8 @@ static uint32_t port_data_get(void* data, uint32_t num_bytes)
 
 bool terminal_submit_ble(uint8_t id, const uint8_t *payload, uint16_t length)
 {
-    if (!process_job_queue || !((id == 1 || id == 7 || id == 21 || id == 23) ? length == 0 :
-        ((id == 3 || id == 20 || id == 22) && length > 1 && length <= 2048 && payload[0] == '{'))) return false;
+    if (!process_job_queue || !((id == 1 || id == 7 || id == 21 || id == 23 || id == 31 || id == 32) ? length == 0 :
+        ((id == 3 || id == 20 || id == 22 || id == 30) && length > 1 && length <= 2048 && payload && payload[0] == '{'))) return false;
     terminal_command *cmd = pvPortMalloc(sizeof(*cmd));
     if (!cmd) return false;
     memset(cmd, 0, sizeof(*cmd)); cmd->id = id; cmd->length = length;
@@ -497,6 +498,11 @@ void process_terminal_command(terminal_command* cmd, ifx_usecase_handle usecase_
     static char json_buffer[2048] = { 0 };
     #endif
 
+    if (cmd->id >= 30 && cmd->id <= 32) {
+        bool ok = radar_wifi_command(cmd->id, cmd->payload, cmd->length);
+        terminal_printf("{\"cmd\":{\"id\":%u,\"state\":%u}}\n", cmd->id, ok);
+        return;
+    }
     if (cmd->id >= 20 && cmd->id <= 23) {
         bool ok = research_command(cmd->id, cmd->payload, cmd->length);
         terminal_printf("{\"cmd\":{\"id\":%u,\"state\":%u}}\n", cmd->id, ok);
@@ -558,6 +564,7 @@ void process_terminal_command(terminal_command* cmd, ifx_usecase_handle usecase_
             #endif // ifndef RADAR_MOTION_DETECTION
 
             // Guarantee a hex-prefixed pointer output like: ,"rtt":{"addr":"0x20001234","channel":1}
+            terminal_write(",\"capabilities\":{\"wifi\":true,\"raw_websocket\":1}");
             terminal_printf(",\"rtt\":{\"addr\":\"0x%" PRIxPTR "\",\"channel\":%u}", (uintptr_t)&_SEGGER_RTT,
                             (unsigned int)RTT_UP_CHANNEL_RAW_DATA_FRAMES);
             terminal_printf(

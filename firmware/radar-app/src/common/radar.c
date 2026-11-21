@@ -39,6 +39,7 @@
 
 #include "radar_config.h"
 #include "SEGGER_RTT.h"
+#include "radar_wifi.h"
 
 #define RADAR_TASK_STACK_DEPTH_WORDS 2048   /* number of words according to configSTACK_DEPTH_TYPE */
 
@@ -335,9 +336,11 @@ void handle_fifo_threshold_interrupt(void)
         radar_job->sample_count = frame_size / sizeof(uint16_t);
         radar_job->captured_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
         if (xensiv_bgt60cutrxx_get_fifo(&(sensor.dev), (fifo_entry_t*)frame_payload, current_fifo_threshold+1) != XENSIV_BGT60CUTRXX_STATUS_OK) {
+            radar_stream_fifo_error();
             vPortFree(frame_payload); vPortFree(radar_job); ++frames_dropped; return;
         }
         xensiv_bgt60cutrxx_set_irq_clear(&(sensor.dev), BGT60CUTR13B_IR_CLEAR_THRESHOLD_MSK);
+        radar_stream_frame(frame_payload, frame_size / sizeof(uint16_t), radar_job->captured_ms);
 
         if (!send_frame_via_rtt(frame_payload, current_frame_number, frame_size / sizeof(uint16_t)))
         {
@@ -470,6 +473,7 @@ static void handle_radar_msg_get_registers(register_list_t* regs)
 
 static void handle_radar_msg_set_registers(const register_list_t* regs)
 {
+    radar_stream_configuration_changed();
     radar_enable(false);
 
     /* Update FIFO threshold if provided in metadata */

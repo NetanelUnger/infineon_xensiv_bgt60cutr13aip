@@ -47,7 +47,7 @@ static void enqueue_line(const char *text, size_t length) {
     bool frame = strstr(text, "\"tracks\"") != NULL;
     /* Diagnostic chatter does not consume reply capacity. */
     if (!frame && !strstr(text,"\"version\"") && !strstr(text,"\"settings\"") &&
-        !strstr(text,"\"research\"") && !strstr(text,"\"research_page\"") &&
+        !strstr(text,"\"research\"") && !strstr(text,"\"research_page\"") && !strstr(text,"\"wifi\"") &&
         !strstr(text,"\"cmd\"") && !strstr(text,"\"warning\"") && !strstr(text,"\"error\"")) return;
     static TickType_t last_frame;
     TickType_t now = xTaskGetTickCount();

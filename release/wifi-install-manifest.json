@@ -1,0 +1,28 @@
+{
+  "name": "presence_detection_and_tracking_ble",
+  "version": "0.3.1",
+  "build": "ble-wifi-ft-fix",
+  "status": "Development; programmed and flash verified; real BLE provisioning, DHCP, 20-second raw capture with concurrent BLE, reconnect and 10-second Chrome capture passed without reported loss",
+  "hex": "radar-ble-wifi-v0.3.1-development.hex",
+  "sha256": "c5ed667146f3c2817317874f524ac7cf2ed75cdad1b7c1d04054b735f29676a2",
+  "flash_utilized_bytes": 1146380,
+  "heap_region_bytes_before_runtime_allocations": 602664,
+  "snapshot_date": "2026-11-18",
+  "launcher": "../Install-Radar-WiFi.cmd",
+  "known_issues": "../KNOWN_ISSUES.md",
+  "protocol": "../WIFI_RAW.md",
+  "toolchain": "Arm GNU 14.2.1 / ModusToolbox 3.9.0",
+  "source": "../firmware/radar-app",
+  "ble_pairing": false,
+  "hardware_validation": {
+    "ft_psk_detected": true,
+    "wpa2_psk_compatibility_retry_succeeded": true,
+    "node_capture_frames": 401,
+    "node_capture_chirps": 6817,
+    "browser_capture_frames": 200,
+    "browser_capture_chirps": 3400,
+    "reported_queue_drops": 0,
+    "reported_fifo_errors": 0,
+    "ble_configuration_roundtrip_and_restore": true
+  }
+}

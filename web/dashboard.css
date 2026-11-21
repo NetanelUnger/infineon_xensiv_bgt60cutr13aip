@@ -1,0 +1,34 @@
+.demo-page [hidden] { display: none !important }
+.demo-page main:has(#wifi:not([hidden])) { max-width: 1900px }
+.demo-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 22px }
+.demo-tabs [role=tab] { flex: 1; min-height: 48px; border: 0; border-bottom: 3px solid transparent; background: transparent; font-size: clamp(13px, 1.2vw, 17px) }
+.demo-tabs [aria-selected=true] { border-color: var(--technical); color: var(--technical); background: #e5ede6 }
+#bleConnection .radar-device-bar { width: 100%; margin: 0 0 12px }
+main:has(#wifi:not([hidden]) #wifiLab:not([hidden])) #notice:not(.error) { display: none }
+.peak-control { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 14px }
+.peak-control input { direction: ltr; accent-color: var(--technical) }
+.lab-toolbar, .lab-stream-status { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px }
+.lab-stream-status { border-block: 1px solid var(--line); margin-block: 18px }
+.lesson { padding: clamp(16px, 2vw, 32px); margin: 20px 0 }
+.lesson h2 { font-size: clamp(20px, 2vw, 28px) }
+.lesson h3 { margin-bottom: 4px }
+.lesson figure { min-width: 0; margin: 0; background: #fffdf8; border: 1px solid var(--line); padding: clamp(10px, 1.2vw, 20px) }
+.lesson figcaption, .lesson summary { font-weight: 700; margin-bottom: 10px }
+.lesson summary { cursor: pointer }
+.lesson small { color: var(--muted); line-height: 1.6 }
+.lesson .fifo-row svg { height: clamp(55px, 6vw, 90px) }
+.frame-grid, .river-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin-block: 18px }
+.profile { grid-column: 1/-1 }
+.frame-grid canvas, .river-pair canvas { display: block; width: 100%; direction: ltr }
+.rx-legend { direction: ltr; display: flex; justify-content: center; gap: 20px; font-weight: 700 }
+.rx-legend span:nth-child(1) { color: #237763 }
+.rx-legend span:nth-child(2) { color: #226eaa }
+.rx-legend span:nth-child(3) { color: #a35929 }
+#boardReading, #deltaReading:not(:empty) { display: block; padding: 14px; background: #e5ede6; border-inline-start: 3px solid var(--technical) }
+#sampleStatus { font-weight: bold }
+#rawExperimentHost :is(#sampleA,#sampleB,.sample-instructions,#sampleStatus,#reviewSamples) { display: none }
+@media(max-width:800px) {
+  .demo-tabs [role=tab] { padding: 8px 4px }
+  .frame-grid, .river-pair { grid-template-columns: 1fr }
+  .lab-stream-status .raw-stats { margin-top: 4px }
+}

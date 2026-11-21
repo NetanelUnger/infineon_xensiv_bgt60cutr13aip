@@ -51,6 +51,7 @@
 #include "resource_map.h"
 #include "SEGGER_RTT.h"
 #include "radar_ble.h"
+#include "radar_wifi.h"
 
 
 /******************************************************************************
@@ -189,6 +190,7 @@ int main(void)
     process_task_init();
     terminal_task_init();
     radar_ble_init();
+    radar_wifi_init();
 
     /* Start the FreeRTOS scheduler. */
     vTaskStartScheduler();

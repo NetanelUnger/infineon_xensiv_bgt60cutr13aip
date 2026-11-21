@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('Original', 'BLE')]
+    [ValidateSet('Original', 'BLE', 'WiFi')]
     [string]$Firmware,
     [switch]$CheckOnly,
     [string]$OpenOcdRoot = 'C:/Infineon/Tools/XENSIV-CMOS-Radar-Visualization-Tool/1.6.0/lib/ifxapp/utils/firmware_flashing/tools/openocd/windows/openocd'
@@ -22,6 +22,11 @@ $images = @{
         Name = 'Radar BLE 0.2.0 development (with continuous advertising)'
         File = 'release/radar-ble-v0.2.0-development.hex'
         Hash = '44E5D328B9091602C6C429158C09525E8B423C577394BE2B0DE82DDF76C34610'
+    }
+    WiFi = @{
+        Name = 'Radar BLE + Wi-Fi 0.3.1 development'
+        File = 'release/radar-ble-wifi-v0.3.1-development.hex'
+        Hash = 'C5ED667146F3C2817317874F524AC7CF2ED75CDAD1B7C1D04054B735F29676A2'
     }
 }
 

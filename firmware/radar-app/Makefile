@@ -84,7 +84,7 @@ VERBOSE=
 # ... then code in directories named COMPONENT_foo and COMPONENT_bar will be
 # added to the build
 #
-COMPONENTS=FREERTOS CMSIS_DSP WICED_BLE
+COMPONENTS=FREERTOS CMSIS_DSP WICED_BLE LWIP MBEDTLS WCM
 # Like COMPONENTS, but disable optional code that was enabled by default.
 DISABLE_COMPONENTS=
 
@@ -97,6 +97,9 @@ SOURCES=
 # Like SOURCES, but for include directories. Value should be paths to
 # directories (without a leading -I).
 INCLUDES+=libs/algo
+INCLUDES+=configs
+DEFINES+=CYBSP_WIFI_CAPABLE DISABLE_MBEDTLS_ACCELERATION MBEDTLS_USER_CONFIG_FILE='"mbedtls_user_config.h"'
+LDFLAGS+=-Wl,--wrap=cybsp_wifi_init_primary_extended
 
 # Add additional defines to the build process (without a leading -D).
 
@@ -106,10 +109,8 @@ INCLUDES+=libs/algo
 # if ism band japan radar configuration is to be used
 #override DEFINES += RADAR_ISM_BAND_JAPAN
 
-# "override" appends the defines to command line defines, otherwise
-# the command line defines are used ignoring the defines in the makefile
-# even if they are appended.
-override DEFINES+=ARM_DSP_CONFIG_TABLES \
+# Keep normal append semantics so middleware can add its required defines.
+DEFINES+=ARM_DSP_CONFIG_TABLES \
 		 ARM_FAST_ALLOW_TABLES \
 		 ARM_FFT_ALLOW_TABLES \
  		 ARM_ALL_FAST_TABLES \
@@ -127,8 +128,9 @@ override DEFINES+=ARM_DSP_CONFIG_TABLES \
 		 CY_RTOS_AWARE
 
 APPNAME_USECASE := $(word 1,$(subst _csk, ,$(APPNAME)))
-override DEFINES += FW_NAME=\"$(APPNAME_USECASE)\"
-override DEFINES += IFX_BUILD_VERSION=0.2.0 IFX_BOARD_NAME=CSK IFX_BUILD_HASH=ble-research-v1
+# Do not use override here: Wi-Fi libraries append their firmware/NVRAM defines.
+DEFINES += FW_NAME=\"$(APPNAME_USECASE)\"
+DEFINES += IFX_BUILD_VERSION=0.3.1 IFX_BOARD_NAME=CSK IFX_BUILD_HASH=ble-wifi-ft-fix
 
 # Select softfp or hardfp floating point. Default is softfp.
 VFP_SELECT=hardfp

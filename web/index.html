@@ -1,50 +1,139 @@
 <!doctype html>
 <html lang="he" dir="rtl">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Radar CSK · מעקב חי</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="radar-position.css"><link rel="stylesheet" href="natilab.css"><link rel="stylesheet" href="guide-shell.css"><link rel="icon" href="data:,"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Radar CSK · מעבדת הרדאר</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="radar-position.css"><link rel="stylesheet" href="natilab.css"><link rel="stylesheet" href="guide-shell.css"><link rel="stylesheet" href="raw-analysis.css"><link rel="stylesheet" href="dashboard.css"><link rel="icon" href="data:,"></head>
 <body class="demo-page">
 <header class="nl-header"><div class="nl-header-inner"><a class="nl-brand" href="https://natilab.net/" aria-label="NatiLab — עמוד הבית"><strong dir="ltr">NatiLab</strong><span class="nl-tagline">לא רק מה חדש. מה אפשר לבנות מזה.</span><small class="nl-caption">מדריכים, ניסויים וכלים מהמעבדה</small></a><a class="nl-home" href="https://natilab.net/">חזרה ל־NatiLab ↗</a></div></header>
 <nav class="nl-nav" aria-label="ניווט במעבדת הרדאר"><div class="nl-nav-inner"><span class="nl-project" dir="ltr">RADAR / XENSIV</span><a href="index.html" aria-current="page">דמו רדאר</a><a href="wiki.html">מדריך הרדאר</a><a href="radar-demo.html">הדגמת אמת</a><a href="wiki.html#install">הורדה וצריבה</a><a href="wiki.html#data">נתונים ועיבוד</a></div></nav>
-<div class="radar-device-bar"><span class="muted" dir="ltr">BGT60CUTR13 · Bluetooth LE</span><div class="connection"><span id="status" class="pill">לא מחובר</span><button id="connect" class="primary">חיבור לחיישן</button><button id="disconnect" disabled>ניתוק</button></div></div>
 <main>
-<section class="intro"><div><span class="eyebrow">מרחב החישה שלך</span><h1>מעקב בחדר, בזמן אמת.</h1><p id="deviceInfo">חבר את Radar-CSK כדי לקרוא את ההגדרות ולהציג את נתוני הרדאר.</p></div><div class="stats"><div><strong id="trackCount">—</strong><span>מסלולים</span></div><div><strong id="frameRate">—</strong><span>עדכונים לשנייה</span></div><div><strong id="latency">—</strong><span>עיבוד · ms</span></div></div></section>
+<div class="demo-tabs" role="tablist" aria-label="מצבי הדגמה">
+ <button role="tab" id="tab-ble" aria-controls="ble" aria-selected="true">מעקב ובקרה · BLE</button>
+ <button role="tab" id="tab-wifi" aria-controls="wifi" aria-selected="false" tabindex="-1">מעבדת רדאר · Wi-Fi</button>
+ <button role="tab" id="tab-raw" aria-controls="raw" aria-selected="false" tabindex="-1">ניתוח הקלטות · RAW</button>
+</div>
+<div id="bleConnection"><div class="radar-device-bar"><span class="muted" dir="ltr">BGT60CUTR13 · Bluetooth LE</span><div class="connection"><span id="status" class="pill">לא מחובר</span><button id="connect" class="primary">חיבור לחיישן</button><button id="disconnect" disabled>ניתוק</button></div></div>
 <div id="notice" role="status" aria-live="polite">להתחלה: הפעל Bluetooth במחשב, לחץ על חיבור לחיישן ובחר Radar-CSK.</div>
+</div><section role="tabpanel" id="ble" aria-labelledby="tab-ble">
+<section class="intro"><div><h1>מעקב בחדר, בזמן אמת.</h1><p id="deviceInfo">חבר את Radar-CSK כדי לקרוא את ההגדרות ולהציג את נתוני הרדאר.</p></div><div class="stats"><div><strong id="trackCount">—</strong><span>מסלולים</span></div><div><strong id="frameRate">—</strong><span>עדכונים לשנייה</span></div><div><strong id="latency">—</strong><span>עיבוד · ms</span></div></div></section>
 <div class="workspace">
 <section class="radar-card card"><div class="card-head"><div><h2>מבט מלמעלה</h2><a class="wiki-help" href="wiki.html#live" target="radar-wiki" title="פתיחת הסבר בחלון נפרד">איך קוראים את הנקודות? ↗</a><span class="muted">מרחק וזווית ביחס לחיישן</span></div><div class="plot-tools"><label>טווח תצוגה <select id="range"><option value="4">4 m</option><option value="6">6 m</option><option value="10">10 m</option><option value="12" selected>12 m</option><option value="20">20 m</option></select></label><button id="pause" disabled>השהיית תצוגה</button></div></div>
 <div class="plot-wrap"><svg id="plot" viewBox="0 0 900 500" role="img" aria-label="גרף קוטבי של מסלולים וזיהויים"><defs><radialGradient id="radarFill" cx="50%" cy="100%" r="100%"><stop offset="0" stop-color="#c9e9e3"/><stop offset="1" stop-color="#f3faf8"/></radialGradient></defs><g id="grid"></g><g id="points"></g></svg><div id="emptyPlot">ממתין לחיבור לחיישן</div></div>
 <div class="legend"><span class="track-key">● מסלול</span><label><input id="showDetections" type="checkbox"> הצגת זיהויים גולמיים</label><span class="macro-key">□ Macro</span><span class="micro-key">△ Micro</span><span class="static-key">◇ Static</span></div><p class="plot-note">החיישן במרכז התחתון. זווית חיובית ימינה; 0° ישר קדימה. זיהוי גולמי אינו בהכרח אדם נוסף.</p>
 </section>
-<aside class="card setup-card"><div class="card-head"><div><h2>הגדרה ראשונית</h2><a class="wiki-help" href="wiki.html#settings" target="radar-wiki" title="פתיחת הסבר בחלון נפרד">מה כל הגדרה משנה? ↗</a><span class="muted">נקראת מהחיישן המחובר</span></div><span class="step">01</span></div><p class="setup-help">הצב את החיישן ביציבות, וקבע גובה, הטיה וכיוון אנטנה לפי ההתקנה בפועל.</p><form id="settingsForm"><div id="settingsFields" class="settings-fields"><div class="placeholder">האפשרויות יופיעו לאחר חיבור וקריאת תצורת החיישן.</div></div><div class="setup-actions"><button id="apply" class="primary" type="submit" disabled>החל הגדרות על החיישן</button><button id="refresh" type="button" disabled>קרא מחדש</button></div></form><p class="muted small">הגדרות חלות בזיכרון עד לאתחול הכרטיס. אפשר לשמור קובץ במחשב ולטעון אותו בחיבור הבא.</p><div class="file-actions"><button id="export" disabled>שמירת הגדרות</button><label class="file-button">טעינת קובץ<input id="import" type="file" accept=".json,application/json" disabled></label></div></aside>
+<aside class="card setup-card"><div class="card-head"><div><h2>הגדרה ראשונית</h2><a class="wiki-help" href="wiki.html#settings" target="radar-wiki" title="פתיחת הסבר בחלון נפרד">מה כל הגדרה משנה? ↗</a><span class="muted">נקראת מהחיישן המחובר</span></div></div><p class="setup-help">הצב את החיישן ביציבות, וקבע גובה, הטיה וכיוון אנטנה לפי ההתקנה בפועל.</p><form id="settingsForm"><div id="settingsFields" class="settings-fields"><div class="placeholder">האפשרויות יופיעו לאחר חיבור וקריאת תצורת החיישן.</div></div><div class="setup-actions"><button id="apply" class="primary" type="submit" disabled>החל הגדרות על החיישן</button><button id="refresh" type="button" disabled>קרא מחדש</button></div></form><p class="muted small">הגדרות חלות בזיכרון עד לאתחול הכרטיס. אפשר לשמור קובץ במחשב ולטעון אותו בחיבור הבא.</p><div class="file-actions"><button id="export" disabled>שמירת הגדרות</button><label class="file-button">טעינת קובץ<input id="import" type="file" accept=".json,application/json" disabled></label></div></aside>
 <section class="card table-card"><div class="card-head"><div><h2>מסלולים מזוהים</h2><a class="wiki-help" href="wiki.html#live" target="radar-wiki" title="פתיחת הסבר בחלון נפרד">פירוש השדות בטבלה ↗</a></div><span id="dataAge" class="muted">אין נתונים</span></div><div class="table-scroll"><table><thead><tr><th>מסלול</th><th>מרחק · m</th><th>אזימוט · °</th><th>גובה זוויתי · °</th><th>מהירות · m/s</th><th>פעילות</th></tr></thead><tbody id="tracks"><tr><td colspan="6" class="empty-row">אין מסלולים להצגה</td></tr></tbody></table></div></section>
 </div>
-<section class="card wifi-card" id="live-rx" aria-labelledby="wifiTitle">
- <div class="card-head"><div><h2 id="wifiTitle">שלוש אנטנות הקליטה בזמן אמת</h2><p class="muted">חברו את החיישן באמצעות Bluetooth והגדירו את רשת ה־Wi-Fi של המחשב. אם הכרטיס כבר מחובר לרשת, אפשר להציג את הדגימות מיד כשהכתובת שלו מופיעה.</p></div></div>
- <div class="wifi-body">
-  <p id="wifiUnavailable" hidden>נדרשת קושחה 0.3.0 ומעלה לחיבור Wi-Fi. יכולות ה־BLE הקיימות זמינות בקושחה הנוכחית.</p>
+</section>
+<section role="tabpanel" id="wifi" aria-labelledby="tab-wifi" hidden>
+ <div id="wifiSetup" class="card wifi-body">
+  <h1>חיבור החיישן ל־Wi-Fi</h1>
+  <p>חברו את Radar-CSK ב־Bluetooth בעזרת הכפתור למעלה. הזינו את פרטי הרשת שאליה מחובר המחשב. כשהכרטיס יקבל כתובת, מעבדת הרדאר תיפתח.</p>
+  <p id="wifiUnavailable" hidden>חיבור Wi-Fi דורש קושחה שתומכת בהזרמת RAW (גרסה 0.3.0 ומעלה).</p>
   <form id="wifiForm" class="wifi-form" autocomplete="off">
    <label>שם הרשת (SSID)<input id="wifiSsid" type="text" dir="ltr" required autocomplete="off" spellcheck="false"></label>
    <label>סיסמת הרשת<input id="wifiPassword" type="password" dir="ltr" autocomplete="new-password"></label>
    <button id="wifiJoin" class="primary" disabled>חיבור לרשת</button>
-   <button id="wifiRefresh" type="button" disabled>רענון מצב</button><button id="wifiLeave" type="button" disabled>ניתוק Wi-Fi</button>
+   <button id="wifiRefresh" type="button" disabled>רענון מצב</button>
   </form>
-  <p class="muted">פרטי הרשת נשמרים בכרטיס עד לאתחול. חיבור ה־BLE ממשיך לפעול במקביל.</p>
-  <p id="wifiStatus" role="status" aria-live="polite">התחבר לחיישן ב־BLE כדי להגדיר את הרשת.</p>
-  <div class="wifi-endpoint"><span>כתובת הנתונים:</span> <output id="wifiAddress" dir="ltr">—</output></div>
-  <div class="research-tools"><button id="liveRxStart" class="primary" disabled>הצג אנטנות בזמן אמת</button><button id="liveRxStop" disabled>עצור תצוגה חיה</button></div>
-  <figure class="fifo-comparison">
+  <details id="directWifiSetup"><summary>הכרטיס כבר מחובר לרשת ויש לי כתובת IP</summary>
+   <form id="directWifiForm" class="wifi-form"><label>כתובת ה־IPv4 של הכרטיס<input id="directWifiIp" type="text" dir="ltr" inputmode="decimal" required placeholder="192.168.1.42"></label><button id="directWifiConnect" type="submit">חיבור ישיר ב־Wi-Fi</button></form>
+   <p>בחיבור ישיר אפשר לצפות בדגימות, לזהות שיאי החזר ולהקליט. פלט מסלולי המעקב של הקושחה זמין בחיבור BLE.</p>
+  </details>
+ </div>
+ <p id="wifiStatus" role="status"></p>
+ <p id="rawStatus" role="status" aria-live="polite"></p>
+ <button id="rawSave" hidden disabled>שמירת ההקלטה לקובץ</button>
+ <div id="wifiLab" hidden>
+  <div class="lab-toolbar"><div><h1>שלוש אנטנות הקליטה בזמן אמת</h1><span class="muted">כתובת הכרטיס <bdi id="wifiAddress">—</bdi></span></div>
+   <div class="research-tools"><button id="liveRxStart" class="primary" disabled>הפעל זרם חי</button><button id="liveRxStop" disabled>עצור זרם</button><button id="wifiLeave" disabled>ניתוק מרשת Wi-Fi</button></div></div>
+  <div class="lab-stream-status">
+  <dl class="raw-stats"><div><dt>מסגרות</dt><dd id="rawFrames">0</dd></div><div><dt>צ׳ירפים</dt><dd id="rawChirps">0</dd></div><div><dt>נפח · MiB</dt><dd id="rawBytes">0.00</dd></div><div><dt>מסגרות לשנייה</dt><dd id="rawRate">0.0</dd></div><div><dt>פערים / שגיאות איסוף</dt><dd id="rawLoss">0 / 0</dd></div></dl></div>
+  <section id="live-rx" class="card lesson"><h2>מה קלטה כל אנטנה?</h2>
+   <p>כל קו מציג את 64 הדגימות של אותה סריקת תדר קצרה (צ׳ירפ). עקבו אחרי התנודות באותה עמודה בשלושת הערוצים.</p>
+   <figure class="fifo-comparison">
    <figcaption>דגימות ה־FIFO · צ׳ירפ ראשון מכל מסגרת</figcaption>
    <div id="liveRxTraces" class="fifo-traces"></div>
    <small>מספר הדגימה בצ׳ירפ. בכל עמודה שלוש האנטנות נדגמו באותו רגע.</small>
    <p id="liveRxReading">ממתין לדגימות מהכרטיס.</p>
   </figure>
-  <div class="research-tools"><button id="rawConnect" disabled>חיבור לנתונים דרך Wi-Fi</button><button id="rawDisconnect" disabled>ניתוק נתונים</button><button id="rawRecord" class="primary" disabled>הקלטה מלאה לקובץ</button><button id="rawStop" disabled>עצירה ושמירה</button><button id="rawSave" disabled>שמירת ההקלטה</button></div>
-  <p id="rawStatus" role="status" aria-live="polite">ממתין לחיבור נתונים.</p>
-  <dl class="raw-stats"><div><dt>מסגרות</dt><dd id="rawFrames">0</dd></div><div><dt>צ׳ירפים</dt><dd id="rawChirps">0</dd></div><div><dt>נפח · MiB</dt><dd id="rawBytes">0.00</dd></div><div><dt>מסגרות לשנייה</dt><dd id="rawRate">0.0</dd></div><div><dt>פערים / שגיאות איסוף</dt><dd id="rawLoss">0 / 0</dd></div></dl>
-  <p class="research-note">נשמרות כל הדגימות: 17 צ׳ירפים × 64 דגימות × 3 אנטנות בכל מסגרת, לאחר מיצוע חומרה של 16. הקובץ כולל את הגדרות הרדאר, זמני האיסוף ומוני האובדן.</p>
+  </section>
+  <section class="card lesson"><div class="lab-toolbar"><h2>מההד לתא טווח</h2><button id="holdFrame" disabled>הקפאת מסגרת לעיון</button></div>
+   <p>הקו היוצא מ־TX והקווים החוזרים ל־RX ממחישים את דרך ההד. הסמן נע לפי תא ההחזר החזק במסגרת. המיקום בתרשים יחסי, ללא כיול למטרים או לזווית.</p>
+   <div class="frame-grid">
+    <figure><figcaption>מסלול השידור וההחזר</figcaption><canvas id="echoPath" role="img" aria-label="מסלול השידור וההחזר לפי תא ההחזר החזק"></canvas></figure>
+    <figure><figcaption>מפת דגימות ADC · מסגרת אחת</figcaption><canvas id="fifoMap" role="img" aria-label="מפת דגימות של שלוש האנטנות ב־17 צ׳ירפים"></canvas><small>כל שורה היא צ׳ירפ. בכל עמודה שלושה פסים בסדר RX1, RX2, RX3. בהיר מציין ערך ADC גבוה בסולם המשותף למסגרת.</small></figure>
+    <figure class="profile"><figcaption>פרופיל הטווח · הצ׳ירפ הראשון</figcaption><canvas id="liveProfile" role="img" aria-label="עוצמת ההחזר לפי תא טווח לכל אנטנה"></canvas>
+    <div class="rx-legend"><span>━━ RX1</span><span>━━ RX2</span><span>━━ RX3</span></div></figure>
+   </div>
+   <label class="peak-control">סף לזיהוי שיא בדפדפן <input id="peakThreshold" type="range" min="-100" max="-20" value="-65" step="1"><output id="peakThresholdValue" dir="ltr">-65 dBFS</output></label>
+   <p>הקו המקווקו הוא הסף. שיא מקומי שעובר אותו בממוצע ההספק של שלוש האנטנות מסומן כמועמד להחזר. נסו לשנות את הסף על מסגרת מוקפאת.</p>
+   <p id="frameReading">ממתין למסגרת מהחיישן.</p>
+   <p>הדפדפן מפריד את התנודות לתדרים באמצעות FFT. פסגה מציינת החזר חזק בתא. הזיזו חפץ ובדקו אם הפסגה זזה. גם קיר או שולחן יכולים ליצור פסגה קבועה.</p>
+   <h3>מה מזהה הקושחה עכשיו?</h3><p>המעקב בכרטיס משלב מידע מכמה אנטנות וממסגרות עוקבות. הפלט האחרון מתקבל ב־BLE בקצב משלו. חפץ נייח יכול להופיע בפרופיל גם כשהכרטיס מדווח על אפס מסלולים.</p>
+   <output id="boardReading">ממתין לפלט המעקב ב־BLE.</output>
+  </section>
+  <div id="wifiExperimentHost"><section id="experiment" class="card lesson"><h2>נהר הנתונים · מה משתנה כשמרחיקים את החפץ?</h2>
+   <p class="sample-instructions">הניחו חפץ מול החיישן ולחצו על דגימה A. המתינו לסיום שלוש השניות, הרחיקו את החפץ ולחצו על דגימה B. השאירו את החיישן באותה תנוחה.</p>
+   <p>השוו את אותה שורת אנטנה בשתי המפות. כל עמודה מכסה 50 אלפיות שנייה ומציגה את ההספק הממוצע מהצ׳ירפ הראשון במסגרות שהתקבלו. הזמן מתקדם משמאל לימין ותאי הטווח עולים מלמטה למעלה. חפשו פס שנחלש או עובר לתא אחר אחרי הזזת החפץ.</p>
+   <div class="river-pair">
+    <figure><figcaption>A · עם החפץ</figcaption><button id="sampleA" disabled>דגימה A · 3 שניות</button><p id="sampleInfoA">טרם נדגם</p><canvas id="riverA" hidden role="img" aria-label="מפת זמן ותאי טווח בשלוש האנטנות, עם החפץ"></canvas></figure>
+    <figure><figcaption>B · אחרי ההזזה</figcaption><button id="sampleB" disabled>דגימה B · 3 שניות</button><p id="sampleInfoB">טרם נדגם</p><canvas id="riverB" hidden role="img" aria-label="מפת זמן ותאי טווח בשלוש האנטנות, אחרי ההזזה"></canvas></figure>
+   </div>
+   <div class="raw-color-key"><bdi>−90 dBFS</bdi><span class="raw-color-bar"></span><bdi>−20 dBFS</bdi><span>צהוב = החזר חזק · לבן = אין דגימה</span></div>
+   <p id="sampleStatus" role="status">הדגימה זמינה בזמן קבלת מסגרות מהכרטיס.</p>
+   <a id="reviewSamples" class="wiki-help" href="#raw" hidden>עיון בדגימות גם אחרי ניתוק, בלשונית RAW</a>
+   <p id="deltaReading"></p>
+   <div id="inspectComparison" hidden>
+    <label class="peak-control">בדיקת אותו תא בשתי המפות <input id="compareBin" type="range" min="1" max="32" value="1"><output id="compareBinValue" for="compareBin">1</output></label>
+    <p>המחוון מסמן את התא בכל שלוש האנטנות. הטבלה מציגה את ההחזר הממוצע לפני ההזזה ואחריה.</p>
+    <div class="table-scroll"><table><thead><tr><th>אנטנה</th><th>A · dBFS</th><th>B · dBFS</th><th>שינוי · dB</th></tr></thead><tbody id="binComparison"></tbody></table></div>
+   </div>
+  </section></div>
+  <details class="card lesson"><summary>הקלטה מלאה לקובץ RAW</summary>
+   <p>להתחלת הקלטה מלאה, עצרו את הזרם החי והשאירו את חיבור הנתונים פתוח.</p>
+   <div class="research-tools"><button id="rawConnect" disabled>פתח חיבור נתונים</button><button id="rawDisconnect" disabled>סגור חיבור נתונים</button></div>
+   <div class="research-tools"><button id="rawRecord" class="primary" disabled>הקלטה מלאה לקובץ</button><button id="rawStop" disabled>עצירה ושמירה</button></div>
+
+  <p class="research-note">נשמרות כל הדגימות: 17 צ׳ירפים × 64 דגימות × 3 אנטנות בכל מסגרת, לאחר מיצוע חומרה של 16. הקובץ כולל את הגדרות הרדאר, זמני האיסוף ומוני האובדן. לניתוח קובץ ‎.radar ולהשוואת שתי הקלטות, עבור אל <a href="#rawAnalysis">השוואת הקלטות RAW</a>.</p>
   <p class="muted">בדפדפן תומך, הנתונים נכתבים לקובץ במהלך ההקלטה. אחרת, ההקלטה נשמרת זמנית במחשב עד 64 MiB ואז אפשר להוריד אותה. השאר את הדף פתוח עד סיום השמירה.</p>
+
+  </details>
+ </div>
+</section>
+<section role="tabpanel" id="raw" aria-labelledby="tab-raw" hidden><h1>צפייה וניתוח בנתונים גולמיים</h1>
+<div id="rawExperimentHost"></div>
+<section id="rawAnalysis" class="card raw-analysis" aria-labelledby="rawAnalysisTitle">
+ <div class="card-head"><div><span class="eyebrow">מעבדת ההקלטות</span><h2 id="rawAnalysisTitle">מה השתנה בין שתי המדידות?</h2><p>טען קובץ RAW אחד לבדיקה, או שניים להשוואה. הניתוח נעשה במחשב, גם ללא חיבור לחיישן.</p></div><span class="raw-format" dir="ltr">.radar / RAW</span></div>
+ <div class="raw-analysis-body">
+  <div class="raw-files">
+   <article class="raw-file raw-file-a"><div class="raw-file-head"><h3><span class="raw-letter">A</span> הקלטת בסיס</h3><button id="rawClearA" type="button" disabled>ניקוי A</button></div><label for="rawFileA">בחירת קובץ בסיס ‎.radar</label><input id="rawFileA" type="file" accept=".radar"><p id="rawLoadA" role="status" aria-live="polite">למשל: האובייקט לפני חימום.</p><progress id="rawProgressA" max="1" value="0" hidden aria-label="התקדמות ניתוח קובץ A"></progress><div id="rawDetailsA" class="raw-file-details" hidden></div></article>
+   <article class="raw-file raw-file-b"><div class="raw-file-head"><h3><span class="raw-letter">B</span> הקלטה להשוואה</h3><button id="rawClearB" type="button" disabled>ניקוי B</button></div><label for="rawFileB">בחירת קובץ להשוואה ‎.radar</label><input id="rawFileB" type="file" accept=".radar"><p id="rawLoadB" role="status" aria-live="polite">למשל: אותו אובייקט בזמן חימום, באותו מיקום.</p><progress id="rawProgressB" max="1" value="0" hidden aria-label="התקדמות ניתוח קובץ B"></progress><div id="rawDetailsB" class="raw-file-details" hidden></div></article>
+  </div>
+  <p id="rawCompareStatus" class="raw-comparison-status" role="status" aria-live="polite">הגרפים יופיעו לאחר טעינת קובץ. אין צורך להקליט מחדש קבצים שכבר שמרת.</p>
+  <div id="rawAnalysisResults" hidden>
+   <div class="raw-analysis-controls">
+    <label>אנטנת קליטה <select id="rawAnalysisRx"><option value="0">RX 1</option><option value="1">RX 2</option><option value="2">RX 3</option></select></label>
+    <label>צ׳ירפ <select id="rawAnalysisChirp"><option value="-1">ממוצע כל 17 הצ׳ירפים</option></select></label>
+    <label class="raw-bin-control">תא לבדיקה <input id="rawAnalysisBin" type="range" min="1" max="32" value="8"><output id="rawBinValue" for="rawAnalysisBin">8</output></label>
+    <button id="rawCompareCsv" type="button">ייצוא ההשוואה ל־CSV</button>
+   </div>
+   <div class="raw-selection-summary" aria-live="polite"><div><span>עוצמה ממוצעת · A</span><strong id="rawValueA" dir="ltr">—</strong></div><div><span>עוצמה ממוצעת · B</span><strong id="rawValueB" dir="ltr">—</strong></div><div><span>השינוי בתא שנבחר · B פחות A</span><strong id="rawValueDelta" dir="ltr">—</strong></div></div>
+   <div class="raw-plot-legend"><span class="raw-key-a">━━ A · בסיס</span><span class="raw-key-b">┄┄ B · השוואה</span><span>עוצמה ב־dBFS · ערך גבוה יותר = החזר חזק יותר</span></div>
+   <div class="raw-analysis-plots">
+    <figure><figcaption>פרופיל ההחזר הממוצע</figcaption><p>באילו תאים ההחזר חזק יותר? לחיצה על הגרף בוחרת תא.</p><canvas id="rawProfileChart" width="800" height="320" role="img" aria-label="עוצמה ממוצעת בכל תא, שתי הקלטות"></canvas><output id="rawProfileReadout">אפשר לבחור תא גם בעזרת המחוון שמעל.</output></figure>
+    <figure><figcaption>ההפרש בין ההקלטות</figcaption><p>מעל האפס: B התחזק. מתחת לאפס: B נחלש.</p><canvas id="rawDeltaChart" width="800" height="320" role="img" aria-label="הפרש העוצמות B פחות A בכל תא"></canvas><p id="rawDeltaCaption">ההפרש מחושב מממוצעי ההספק של שתי ההקלטות.</p></figure>
+    <figure class="raw-wide-plot"><figcaption id="rawHistoryTitle">ההחזר בתא שנבחר לאורך זמן</figcaption><p>כל הקלטה מתחילה ב־0 בציר הזמן. זהו יישור לפי תחילת הקובץ, ולא סנכרון בין ניסויים. ציר העוצמה מותאם אוטומטית לשינויים בתא הנבחר.</p><canvas id="rawHistoryChart" width="1200" height="320" role="img" aria-label="עוצמת ההחזר בתא שנבחר לאורך זמן"></canvas></figure>
+    <figure><figcaption>מפת ההחזרים · A</figcaption><p>עמודות = תאים · שורות = זמן מתחילת ההקלטה</p><canvas id="rawHeatA" width="800" height="390" role="img" aria-label="מפת ההחזרים של הקלטה A לפי תא וזמן"></canvas></figure>
+    <figure><figcaption>מפת ההחזרים · B</figcaption><p>אותו סולם צבע ואותו ציר זמן בשתי המפות</p><canvas id="rawHeatB" width="800" height="390" role="img" aria-label="מפת ההחזרים של הקלטה B לפי תא וזמן"></canvas></figure>
+   </div>
+   <div class="raw-color-key"><span>חלש</span><span class="raw-color-bar" aria-hidden="true"></span><span>חזק</span><span id="rawColorScale" dir="ltr"></span><span>לבן = אין נתונים · פס כהה = מקטע עם פער מדווח</span></div>
+   <p id="rawResolution" class="muted"></p>
+   <details class="raw-data-table"><summary>הערכים בכל תא ופרטי הניתוח</summary><p>כל צ׳ירפ עובר הסרת ממוצע, חלון Hann ו־FFT של 64 דגימות. המיצוע מתבצע בהספק לפני המרה ל־dBFS. התצוגה מוגבלת מלמטה ל־‎−120 dBFS; הפרשים סמוך לרצפה זו אינם משמעותיים.</p><div class="table-scroll"><table><thead><tr><th>תא</th><th>A · dBFS</th><th>B · dBFS</th><th>B − A · dB</th></tr></thead><tbody id="rawCompareTable"></tbody></table></div></details>
+  </div>
+  <p class="research-note">התאים הם תאי תדר של ההחזר; הם עדיין אינם מכוילים למטרים. שינוי יכול לנבוע ממיקום, זווית, תנועה או סביבת המדידה. הגרפים אינם מד טמפרטורה או זיהוי סוג מתכת. להשוואת חימום, שמור על אותה הצבה ואותן הגדרות בין הקבצים.</p>
  </div>
 </section>
 <section class="card research-card" aria-labelledby="researchTitle">
- <div class="card-head"><div><span class="eyebrow">ניסוי והקלטה</span><h2 id="researchTitle">החזרים לאורך זמן</h2><a class="wiki-help" href="wiki.html#start" target="radar-wiki" title="פתיחת הסבר בחלון נפרד">מדריך להקלטות ולנתונים ↗</a><p class="muted">הקלטה על הכרטיס, הורדה ב־BLE וניתוח בדיעבד. גם החזרים מעצמים נייחים נשמרים.</p></div></div>
+ <div class="card-head"><div><span class="eyebrow">ניסוי והקלטה</span><h2 id="researchTitle">החזרים לאורך זמן</h2><a class="wiki-help" href="wiki.html#start" target="radar-wiki" title="פתיחת הסבר בחלון נפרד">מדריך להקלטות ולנתונים ↗</a><p class="muted">לטעינת קובץ JSON בחרו ״טעינת הקלטה״. להקלטה חדשה <a href="#ble">התחברו ב־BLE</a> וחזרו לכאן. גם החזרים מעצמים נייחים נשמרים.</p></div></div>
  <div class="research-tools"><label>משך הקלטה <select id="captureDuration"><option value="2000">2 שניות</option><option value="5000" selected>5 שניות</option><option value="10000">10 שניות</option></select></label><button id="captureStart" class="primary" disabled>הקלט והורד</button><button id="captureRecover" disabled>הורד הקלטה אחרונה</button></div>
  <p id="researchStatus" role="status" aria-live="polite">נדרשת קושחה 0.2.0 ומעלה. אפשר גם לטעון הקלטה מקובץ.</p>
  <p class="research-note">הנתונים מציגים שינוי בהחזר הרדאר, ולא טמפרטורה או זיהוי סוג מתכת. ההקלטה שומרת מקטע מדידה אחד מכל מסגרת; היא אינה מדידה רציפה של תדר הסליל או של רטט מהיר.</p>
@@ -59,6 +148,7 @@
  </div>
  <p id="captureDetails" class="muted"></p><a class="wiki-help" href="wiki.html#quality" target="radar-wiki" title="פתיחת הסבר בחלון נפרד">פירוש מדדי איכות ההקלטה ↗</a>
  <div class="file-actions"><button id="captureExport" disabled>שמור דגימות JSON</button><button id="captureCsv" disabled>ייצוא פרופילים CSV</button><label class="file-button">טעינת הקלטה<input id="captureImport" type="file" accept=".json,application/json"></label></div>
+</section>
 </section>
 <footer><span>קשר ישיר בין הדפדפן לחיישן · הנתונים נשארים במחשב</span><details><summary>פרטי חיבור</summary><pre id="diagnostics" dir="ltr">Disconnected</pre></details></footer>
 </main><script type="module" src="app.js"></script></body></html>
