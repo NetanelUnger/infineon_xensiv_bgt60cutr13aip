@@ -21,3 +21,8 @@ body { border-top: 0; }
 .radar-device-bar .connection { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 @media(max-width:600px) { .nl-header-inner { width:calc(100% - 32px); min-height:100px; gap:12px; flex-wrap:wrap; } .nl-home { padding:6px 10px; } .nl-nav-inner { width:calc(100% - 32px); gap:2px 16px; } .nl-project { flex-basis:100%; padding-top:6px; } .radar-device-bar { width:calc(100% - 28px); } }
 @media print { .nl-nav, .nl-home { display:none; } }
+
+.guide-audio { width:min(100%, 32rem); margin:1.25rem 0; }
+.guide-audio audio { display:block; width:100%; margin-block:.5rem; }
+.guide-audio small { color:var(--muted); font-size:.875rem; }
+@media print { .guide-audio { display:none; } }
